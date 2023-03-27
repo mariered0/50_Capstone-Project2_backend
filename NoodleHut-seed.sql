@@ -51,10 +51,25 @@ broccoli, fresh ginger, peanut and cilantro',
         'Deep fried golden shrimp, serve with Thai sweet chili sauce',
         7.95,
         'Appetizers'),
-        ('Pad Woon Sen',
-        'Stir-fried glass noodle with fresh tofu and mixed vegetables',
+
+
+        ('House Fried Rice',
+        'Thai homestyle fried rice with choice of protein*,
+Chinese broccoli, onion, and tomato',
         13.95,
-        'Vegetarian'),
+        'Rice Dishes'),
+        ('Pineapple Fried Rice',
+        'Thai fried rice with choice of protein*, pineapple, raisin, carrot,
+onion, tomato and eggs',
+        13.95,
+        'Rice Dishes'),
+        ('Thai Hot Basil Fried Rice',
+        'Stir-fried choice of protein* with hot basil leaves, garlic and
+sweet pepper',
+        13.95,
+        'Rice Dishes'),
+        
+        
         ('Sizzling Veggies over Rice',
         'Thai style sizzling veggies, stir-fry with soy sauce, serve on rice',
         13.95,

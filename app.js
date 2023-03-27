@@ -4,14 +4,18 @@
 
 const express = require('express');
 
+const { NotFoundError } = require('./expressError');
+
 const usersRoutes = require('./routes/users');
 const itemsRoutes = require('./routes/items');
+const categoryRoutes = require('./routes/categories');
 const app = express();
 
 app.use(express.json());
 
 app.use('/users', usersRoutes);
 app.use('/items', itemsRoutes);
+app.use('/categories', categoryRoutes);
 
 
 /** Handle 404 errors - This matches everything */

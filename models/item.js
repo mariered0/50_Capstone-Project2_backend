@@ -2,13 +2,14 @@
 
 const db = require('../db');
 const { BadRequestError, NotFoundError } = require('../expressError');
+const { sqlForPartialUpdate } = require('../helpers/sql');
 
 /** Related functions for menu items.  */
 
 class Item {
     /** Find all menu items.
      * 
-     *  Returns [{ item_name, item_desc, item_price, category }, ...]
+     *  Returns {items: [{ item_name, item_desc, item_price, category }, ...]}
      */
 
     static async findAll(){
@@ -19,7 +20,9 @@ class Item {
                     category
              FROM items`
         );
-        return result.rows;
+        
+        
+        return result.rows
     }
 
     /** Find the item with the itemName
@@ -82,6 +85,42 @@ class Item {
         return item;
      }
 
+     /** Update an existing menu item with 'data'
+     *  
+     *  This can handle partial update - it only updates the provided items.
+     * 
+     *  Data can include: {itemName, itemDesc, itemPrice, category (if the category already exists) }
+     * 
+     *  Returns { item: [{ itemName, itemDesc, itemPrice, category }]}
+     * 
+     *  Throws NotFoundError if not found.
+     */
+
+     static async update(itemName, data){
+        const { setCols, values } = sqlForPartialUpdate(
+            data,
+            {
+                itemName: "item_name",
+                itemDesc: "item_desc",
+                itemPrice: "item_price",
+            });
+
+        const itemVarIdx = "$" + (values.length + 1);
+
+        const querySql = `UPDATE items
+                          SET ${setCols}
+                          WHERE item_name = ${itemVarIdx}
+                          RETURNING item_name AS "itemName",
+                                    item_desc AS "itemDesc",
+                                    item_price AS "itemPrice",
+                                    category`;
+        const result = await db.query(querySql, [...values, itemName]);
+        const item = result.rows[0];
+
+        if (!item) throw new NotFoundError(`No item: ${itemName}`);
+
+        return item;
+     }
 }
 
 module.exports = Item;

@@ -1,0 +1,53 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "default": {},
+    "title": "Root Schema",
+    "required": [
+        "itemName",
+        "itemDesc",
+        "itemPrice",
+        "category"
+    ],
+    "properties": {
+        "itemName": {
+            "type": "string",
+            "default": "",
+            "title": "The itemName Schema",
+            "examples": [
+                "Egg Noodle Soup"
+            ]
+        },
+        "itemDesc": {
+            "type": "string",
+            "default": "",
+            "title": "The itemDesc Schema",
+            "examples": [
+                "Egg noodle serve with BBQ pork, fish ball, bean sprout,\ngreen onion, cilantro"
+            ]
+        },
+        "itemPrice": {
+            "type": "string",
+            "default": "",
+            "title": "The itemPrice Schema",
+            "examples": [
+                "9.95"
+            ]
+        },
+        "category": {
+            "type": "string",
+            "default": "",
+            "title": "The category Schema",
+            "examples": [
+                "Noodles with Soup"
+            ]
+        }
+    },
+    "examples": [{
+        "itemName": "Egg Noodle Soup",
+        "itemDesc": "Egg noodle serve with BBQ pork, fish ball, bean sprout,\ngreen onion, cilantro",
+        "itemPrice": "9.95",
+        "category": "Noodles with Soup"
+    }]
+}

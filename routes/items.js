@@ -10,6 +10,7 @@ const Category = require('../models/category');
 const { BadRequestError } = require('../expressError');
 
 const itemNewSchema = require('../schemas/itemNew.json');
+const itemUpdateSchema = require('../schemas/itemUpdate.json');
 const router = express.Router();
 
 
@@ -22,7 +23,7 @@ const router = express.Router();
 router.get('/', async function (req, res, next) {
     try {
         const items = await Item.findAll();
-        return res.json({ items });
+        return res.json({items});
     } catch (err){
         return next(err);
     }
@@ -56,18 +57,41 @@ router.post('/', async function (req, res, next) {
             const errs = validator.errors.map(e => e.stack);
             throw new BadRequestError(errs);
         }
-        // const res = await Category.findAll();
-        // const categories = res.map(c => c.category_name);
-        // if()
-        // console.log('category:', categories);
-        console.log('***************')
-        console.log('req.body', req.body);
+
         const item = await Item.create(req.body.item);
         return res.status(201).json({ item });
     }catch(err){
         return next(err);
     }
 });
+
+
+/** PATCH /:itemName { feild1, filed2, ... } => { item }
+*
+* Patches a menu item data.
+*
+* The fields can be: { itemName, itemDesc, itemPrice, category }
+*
+* Returns { item: [ { itemName, itemDesc, itemPrice, category }]}
+*
+* Authorization required: admin
+*/
+
+
+router.patch('/:itemName', async function (req, res, next) {
+    try{
+        const validator = jsonschema.validate(req.body, itemUpdateSchema);
+        if (!validator.valid){
+            const errs = validator.errors.map(e => e.stack);
+            throw new BadRequestError(errs);
+        }
+
+        const item = await Item.update(req.params.itemName, req.body);
+        return res.json({ item })
+    }catch(err){
+        return next(err);
+    }
+})
 
 
 

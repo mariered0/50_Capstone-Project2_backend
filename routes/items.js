@@ -23,6 +23,7 @@ const router = express.Router();
 router.get('/', async function (req, res, next) {
     try {
         const items = await Item.findAll();
+        const { itemName, itemDesc } = items;
         return res.json({items});
     } catch (err){
         return next(err);
@@ -93,6 +94,19 @@ router.patch('/:itemName', async function (req, res, next) {
     }
 })
 
+/** DELETE /:itemName => { deleted: { items: {itemName, itemDesc, itemPrice, category }} }
+ * 
+ * Authorization: admin
+ */
+
+router.delete("/:itemName", async function (req, res, next) {
+    try{
+        const item = await Item.remove(req.params.itemName);
+        return res.json({ deleted: { item }});
+    }catch (err){
+        return next (err);
+    }
+})
 
 
 module.exports = router;

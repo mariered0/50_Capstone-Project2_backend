@@ -85,7 +85,7 @@ class Item {
         return item;
      }
 
-     /** Update an existing menu item with 'data'
+     /** Update given menu item with 'data'
      *  
      *  This can handle partial update - it only updates the provided items.
      * 
@@ -119,6 +119,25 @@ class Item {
 
         if (!item) throw new NotFoundError(`No item: ${itemName}`);
 
+        return item;
+     }
+
+     /** Delete given menu item from database. 
+      * returns { Deleted: [{ itemName, itemDesc, itemPrice, category }]}
+      * 
+      * Throws NotFoundError if the item not found.
+      */
+
+     static async remove(itemName) {
+        const result = await db.query(
+            `DELETE
+             FROM items
+             WHERE item_name = $1
+             RETURNING item_name, item_desc, item_price, category`,
+            [itemName]);
+        const item = result.rows[0];
+
+        if(!item) throw new NotFoundError(`No item: ${itemName}`);
         return item;
      }
 }

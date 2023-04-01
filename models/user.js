@@ -94,6 +94,14 @@ class User {
             return user;
     }
 
+    /** Find all users.
+     * 
+     *  Returns [{ username, firstName, lastName, email, phone, isAdmin }]
+     * 
+     * 
+     * 
+     */
+
 
 
 }

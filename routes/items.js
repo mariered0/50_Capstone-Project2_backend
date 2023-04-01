@@ -20,10 +20,9 @@ const router = express.Router();
  * 
 **/
 
-router.get('/', async function (req, res, next) {
+router.get('/', async function (res, next) {
     try {
         const items = await Item.findAll();
-        const { itemName, itemDesc } = items;
         return res.json({items});
     } catch (err){
         return next(err);
@@ -49,9 +48,11 @@ router.get('/:itemName', async function (req, res, next) {
 /** POST /:itemName =>  { item: [ { itemName, itemDesc, itemPrice, category }]}
  * 
  * Returns a list of an item with the itemName
+ * 
+ * Authrization required: admin
  */
 
-router.post('/', async function (req, res, next) {
+router.post('/', ensureAdmin, async function (req, res, next) {
     try{
         const validator = jsonschema.validate(req.body, itemNewSchema);
         if (!validator.valid){

@@ -8,10 +8,11 @@ const express = require('express');
 const Item = require('../models/item');
 const Category = require('../models/category');
 const { BadRequestError } = require('../expressError');
+const { ensureAdmin } = require('../middleware/auth');
 
 const itemNewSchema = require('../schemas/itemNew.json');
 const itemUpdateSchema = require('../schemas/itemUpdate.json');
-const router = express.Router();
+const router = new express.Router();
 
 
 /** GET / => { items: [ { itemName, itemDesc, itemPrice, category }, ... ]} 
@@ -80,7 +81,7 @@ router.post('/', ensureAdmin, async function (req, res, next) {
 */
 
 
-router.patch('/:itemName', async function (req, res, next) {
+router.patch('/:itemName', ensureAdmin, async function (req, res, next) {
     try{
         const validator = jsonschema.validate(req.body, itemUpdateSchema);
         if (!validator.valid){
@@ -100,7 +101,7 @@ router.patch('/:itemName', async function (req, res, next) {
  * Authorization: admin
  */
 
-router.delete("/:itemName", async function (req, res, next) {
+router.delete("/:itemName", ensureAdmin, async function (req, res, next) {
     try{
         const item = await Item.remove(req.params.itemName);
         return res.json({ deleted: { item }});

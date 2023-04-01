@@ -1,6 +1,5 @@
 CREATE TABLE users (
-    user_id SERIAL PRIMARY KEY,
-    username TEXT NOT NULL,
+    username TEXT PRIMARY KEY,
     password TEXT NOT NULL,
     first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
@@ -24,7 +23,7 @@ CREATE TABLE items (
 );
 
 CREATE TABLE favorites (
-    user_id INTEGER NOT NULL
+    user_name TEXT NOT NULL
         REFERENCES users ON DELETE CASCADE,
     item_name TEXT NOT NULL
         REFERENCES items ON DELETE CASCADE

@@ -5,8 +5,8 @@ CREATE TABLE users (
     last_name TEXT NOT NULL,
     email TEXT NOT NULL
         CHECK (position('@' IN email) > 1),
-    phone CHAR(10) NOT NULL,
-    CONSTRAINT check_phone  CHECK (phone not like '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
+    phone TEXT NOT NULL,
+        -- CHECK (phone like '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
     is_admin BOOLEAN NOT NULL DEFAULT FALSE
 );
 

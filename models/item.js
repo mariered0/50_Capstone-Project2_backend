@@ -89,7 +89,7 @@ class Item {
      *  
      *  This can handle partial update - it only updates the provided items.
      * 
-     *  Data can include: {itemName, itemDesc, itemPrice, category (if the category already exists) }
+     *  Data looks like: {itemName, itemDesc, itemPrice, category (if the category already exists) }
      * 
      *  Returns { item: [{ itemName, itemDesc, itemPrice, category }]}
      * 

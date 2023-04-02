@@ -4,6 +4,10 @@ const { BadRequestError } = require('../expressError');
  * Helper for making selective update queries.
  * 
  * This can be used to make the SET clause of an SQL update statement.
+ * 
+ * dataToUpdate => {field1: newValue, field2: newValue, ...}
+ * jsToSql => { itemName: "item_name", itemDesc: "item_desc"... }
+ * 
  */
 
 function sqlForPartialUpdate(dataToUpdate, jsToSql) {

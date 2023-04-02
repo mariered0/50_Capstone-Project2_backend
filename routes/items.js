@@ -21,7 +21,7 @@ const router = new express.Router();
  * 
 **/
 
-router.get('/', async function (res, next) {
+router.get('/', async function (req, res, next) {
     try {
         const items = await Item.findAll();
         return res.json({items});

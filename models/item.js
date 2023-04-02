@@ -39,9 +39,9 @@ class Item {
                  FROM items
                  WHERE item_name = $1`,
             [itemName]);
-        const item = result.rows;
+        const item = result.rows[0];
 
-        if(!item[0]) throw new NotFoundError(`No item: ${itemName}`);
+        if(!item) throw new NotFoundError(`No item: ${itemName}`);
 
         return item;
     }

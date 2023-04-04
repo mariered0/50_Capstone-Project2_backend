@@ -81,7 +81,7 @@ router.post('/', ensureAdmin, async function (req, res, next) {
 */
 
 
-router.patch('/:itemName', ensureAdmin, async function (req, res, next) {
+router.patch('/:itemName' , async function (req, res, next) {
     try{
         const validator = jsonschema.validate(req.body, itemUpdateSchema);
         if (!validator.valid){

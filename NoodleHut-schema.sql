@@ -5,8 +5,8 @@ CREATE TABLE users (
     last_name TEXT NOT NULL,
     email TEXT NOT NULL
         CHECK (position('@' IN email) > 1),
-    phone TEXT NOT NULL,
-        -- CHECK (phone like '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
+    phone CHAR(10) NOT NULL,
+        CHECK (phone ~ '^[0-9]{10}$'),
     is_admin BOOLEAN NOT NULL DEFAULT FALSE
 );
 
@@ -23,8 +23,9 @@ CREATE TABLE items (
 );
 
 CREATE TABLE favorites (
-    user_name TEXT NOT NULL
+    username TEXT NOT NULL
         REFERENCES users ON DELETE CASCADE,
     item_name TEXT NOT NULL
-        REFERENCES items ON DELETE CASCADE
+        REFERENCES items ON DELETE CASCADE,
+    PRIMARY KEY (username, item_name)
 );

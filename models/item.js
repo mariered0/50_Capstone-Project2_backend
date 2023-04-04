@@ -114,6 +114,7 @@ class Item {
                                     item_desc AS "itemDesc",
                                     item_price AS "itemPrice",
                                     category`;
+        console.log(querySql);
         const result = await db.query(querySql, [...values, itemName]);
         const item = result.rows[0];
 

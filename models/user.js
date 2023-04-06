@@ -127,7 +127,7 @@ class User {
 
   /** Given a username, return data about the user.
    *
-   * Returns { username, first_name, last_name, email, phone, is_admin }
+   * Returns { username, first_name, last_name, email, phone, is_admin, [favorites] }
    *
    * Throws NotFoundError is the user is not found.
    */
@@ -149,6 +149,13 @@ class User {
     console.log(user);
 
     if (!user) throw new NotFoundError(`No user: ${username}`);
+
+    const userFavoriteRes = await db.query(
+        `SELECT f.item_name
+         FROM favorites AS f
+         WHERE f.username = $1`, [username]);
+
+    user.favorites = userFavoriteRes.rows.map(i => i.item_name);
 
     return user;
   }
@@ -217,18 +224,18 @@ class User {
    */
 
   static async addToFavorite(username, itemName){
-    const preCheck = await db.query(
+    const userCheck = await db.query(
       `SELECT username
        FROM users
        WHERE username = $1`, [username]);
-    const user = preCheck.rows[0];
+    const user = userCheck.rows[0];
     if (!user) throw new NotFoundError(`No user: ${username}`);
 
-    const preCheck2 = await db.query(
+    const itemCheck = await db.query(
       `SELECT item_name
        FROM items
        WHERE item_name = $1`, [itemName]);
-    const item = preCheck2.rows[0];
+    const item = itemCheck.rows[0];
     if (!item) throw new NotFoundError(`No item: ${itemName}`);
 
     await db.query(
@@ -243,24 +250,26 @@ class User {
    */
 
   static async removeFromFavorite(username, itemName){
-    const preCheck = await db.query(
-      `SELECT username
-       FROM users
-       WHERE username = $1`, [username]);
-    const user = preCheck.rows[0];
+
+    const user = await this.get(username);
     if (!user) throw new NotFoundError(`No user: ${username}`);
 
-    const preCheck2 = await db.query(
+    const itemCheck = await db.query(
       `SELECT item_name
        FROM items
        WHERE item_name = $1`, [itemName]);
-    const item = preCheck2.rows[0];
+    const item = itemCheck.rows[0];
     if (!item) throw new NotFoundError(`No item: ${itemName}`);
 
-    await db.query(
+    //Check if the item is included in the user's favorite list.
+    if (user.favorites.includes(itemName)) {
+      await db.query(
       `DELETE
        FROM favorites
-       WHERE (username = $1, item_name = $2)`, [username, itemName]);
+       WHERE (username = $1 AND item_name = $2)`, [username, itemName])
+    }else{
+      throw new NotFoundError(`Not in favorite: ${itemName}`)
+    }
   }
 
 }

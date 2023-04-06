@@ -97,5 +97,21 @@ router.delete("/:username", async (req, res, next) => {
     }
  })
 
+ /** DELETE /:username/items/:itemName => { removed: itemName }
+  * 
+  * Returns { removed: itemName }
+  * 
+  * Authorization required: admin or the same user as the username param
+  */
+
+ router.delete('/:username/items/:itemName', async (req, res, next) => {
+    try{
+        await User.removeFromFavorite(req.params.username, req.params.itemName);
+        return res.json({ removed: req.params.itemName });
+    }catch(err){
+        return next(err);
+    }
+ })
+
 
 module.exports = router;

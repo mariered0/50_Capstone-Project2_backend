@@ -30,7 +30,7 @@ class Item {
      *  Returns { item: [{ itemName, itemDesc, itemPrice }]}
      */
 
-    static async findItem(itemName){
+    static async get(itemName){
         const result = await db.query(
                 `SELECT item_name AS "itemName",
                         item_desc AS "itemDesc",

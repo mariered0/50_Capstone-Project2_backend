@@ -39,7 +39,7 @@ router.get('/', async function (req, res, next) {
 
 router.get('/:itemName', async function (req, res, next) {
     try{
-        const item = await Item.findItem(req.params.itemName);
+        const item = await Item.get(req.params.itemName);
         return res.json({ item });
     }catch(err){
         return next(err);

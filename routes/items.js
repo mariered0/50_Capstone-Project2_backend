@@ -46,9 +46,9 @@ router.get('/:itemName', async function (req, res, next) {
     }
 });
 
-/** POST /:itemName =>  { item: [ { itemName, itemDesc, itemPrice, category }]}
+/** POST / =>  { item:  { itemName, itemDesc, itemPrice, category }}
  * 
- * Returns a list of an item with the itemName
+ * Returns the item created => {{item: {itemName, itemDesc, itemPrice, category}}
  * 
  * Authrization required: admin
  */
@@ -81,7 +81,7 @@ router.post('/', ensureAdmin, async function (req, res, next) {
 */
 
 
-router.patch('/:itemName' , async function (req, res, next) {
+router.patch('/:itemName', ensureAdmin, async function (req, res, next) {
     try{
         const validator = jsonschema.validate(req.body, itemUpdateSchema);
         if (!validator.valid){

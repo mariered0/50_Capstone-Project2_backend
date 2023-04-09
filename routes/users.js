@@ -37,7 +37,7 @@ router.get('/', async (req, res, next) => {
  * Authorization: admin or the same user as the :username param
  */
 
-router.get('/:username', async (req, res, next) => {
+router.get('/:username', ensureCorrectUserOrAdmin, async (req, res, next) => {
     try{
         const user = await User.get(req.params.username);
         return res.json({ user });
@@ -52,7 +52,7 @@ router.get('/:username', async (req, res, next) => {
  * 
  * Authorization: admin or the same user as the :username param
  */
-router.patch('/:username', async (req, res, next) => {
+router.patch('/:username', ensureCorrectUserOrAdmin, async (req, res, next) => {
     try{
         const validator = jsonschema.validate(req.body, userUpdateSchema);
         if (!validator.valid) {
@@ -72,7 +72,7 @@ router.patch('/:username', async (req, res, next) => {
  *  Authorization required: admin or the same user as the username param
  */
 
-router.delete("/:username", async (req, res, next) => {
+router.delete("/:username", ensureCorrectUserOrAdmin, async (req, res, next) => {
     try{
         await User.remove(req.params.username);
         return res.json({ deleted: req.params.username});
@@ -88,7 +88,7 @@ router.delete("/:username", async (req, res, next) => {
  * Authorizatio required: admin or the same user as the username param
  */
 
- router.post('/:username/items/:itemName', async (req, res, next) => {
+ router.post('/:username/items/:itemName', ensureCorrectUserOrAdmin, async (req, res, next) => {
     try{
         await User.addToFavorite(req.params.username, req.params.itemName);
         return res.json({ favorite: req.params.itemName });
@@ -104,7 +104,7 @@ router.delete("/:username", async (req, res, next) => {
   * Authorization required: admin or the same user as the username param
   */
 
- router.delete('/:username/items/:itemName', async (req, res, next) => {
+ router.delete('/:username/items/:itemName', ensureCorrectUserOrAdmin, async (req, res, next) => {
     try{
         await User.removeFromFavorite(req.params.username, req.params.itemName);
         return res.json({ removed: req.params.itemName });

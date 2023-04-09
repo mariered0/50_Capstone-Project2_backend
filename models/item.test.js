@@ -81,7 +81,7 @@ describe("findAll", () => {
 
 describe('findItem', () => {
     test('works', async () => {
-        const item = await Item.findItem('item1');
+        const item = await Item.get('item1');
         expect(item).toEqual({
             itemName: "item1",
             itemDesc: "item item item",
@@ -92,7 +92,7 @@ describe('findItem', () => {
 
     test('invalid itemName', async () => {
         try{
-            await Item.findItem('item10');
+            await Item.get('item10');
         } catch (err){
             expect (err instanceof NotFoundError).toBeTruthy();
         }

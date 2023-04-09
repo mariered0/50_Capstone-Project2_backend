@@ -10,9 +10,12 @@ const authRoutes = require('./routes/auth');
 const usersRoutes = require('./routes/users');
 const itemsRoutes = require('./routes/items');
 const categoryRoutes = require('./routes/categories');
+
+const morgan = require("morgan");
 const app = express();
 
 app.use(express.json());
+app.use(morgan('dev'));
 
 app.use('/auth', authRoutes);
 app.use('/users', usersRoutes);

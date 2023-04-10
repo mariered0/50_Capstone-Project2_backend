@@ -32,7 +32,7 @@ router.get('/', async (req, res, next) => {
 
 /** GET /:username => { user }
  * 
- * Returns { username, firstName, lastName, email. phone, favorites isAdmin }
+ * Returns { username, firstName, lastName, email. phone, isAdmin, [favorites] }
  * 
  * Authorization: admin or the same user as the :username param
  */

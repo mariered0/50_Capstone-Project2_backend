@@ -8,7 +8,7 @@ const { BadRequestError, NotFoundError } = require('../expressError');
 class Category {
     /** Find all items in the category
      * 
-     *  Returns { items: [{ itemName, itemDesc, itemPrice }, ...]}
+     *  Returns [{ itemName, itemDesc, itemPrice }, ...]
      */
 
     static async get(category){
@@ -29,7 +29,7 @@ class Category {
 
      /** Find all categories
      * 
-     *  Returns [ { category_name },... ]}
+     *  Returns [ { category_name: category },... ]}
      */
 
     static async findAll(){
@@ -61,28 +61,26 @@ class Category {
              VALUES ($1)
              RETURNING category_name`,
              [categoryName]);
-
-        const newCategory = result.rows[0];
+        const category = result.rows[0];
         
-        return newCategory;
+        return category;
     }
 
     /** Update a category
      * 
-     *  Returns 
+     *  Returns updated category name.
      */
 
     static async update(categoryName){
-        console.log(categoryName)
+
+        
         const category = await db.query(`
             SELECT category_name
             FROM categories
             WHERE category_name = $1`,
             [categoryName]);
-
-        console.log('category', category);
         
-        if(category.rows[0]) throw new BadRequestError(`Duplicate category: ${categoryName}`);
+        if(category.rows[0] || categoryName === '') throw new BadRequestError(`Duplicate category: ${categoryName}`);
 
         const result = await db.query(`
             INSERT INTO categories
@@ -95,6 +93,24 @@ class Category {
 
         return updatedCategory;
     }
+
+    /** Delete the category from database
+     *  Returns undefined
+     * 
+     *  Throws NotFound Error if category is not found.
+     */
+
+    static async remove(category_name) {
+        const result = await db.query(
+            `DELETE
+             FROM categories
+             WHERE category_name = $1
+             RETURNING category_name`,
+            [category_name]);
+        const category = result.rows[0];
+
+        if (!category) throw new NotFoundError(`No category: ${category_name}`);
+    };
 }
 
 

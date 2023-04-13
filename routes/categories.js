@@ -81,6 +81,16 @@ router.patch('/:category', ensureAdmin, async (req, res, next) => {
     }
 });
 
+/** DELETE /:category  => { deleted: category_name } */
+
+router.delete('/:category', ensureAdmin, async (req, res, next) => {
+    try{
+        await Category.remove(req.params.category);
+        return res.json({ deleted: req.params.category });
+    }catch(err){
+        return next(err);
+    }
+});
 
 
 

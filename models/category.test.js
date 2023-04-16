@@ -44,10 +44,10 @@ describe('findAll', function () {
         const categories = await Category.findAll();
         expect(categories).toEqual([
             {
-                category_name: 'cat1'
+                categoryName: 'cat1'
             },
             {
-                category_name: 'cat2'
+                categoryName: 'cat2'
             }
         ]);
     });
@@ -61,7 +61,7 @@ describe('create', function () {
     test('works', async () => {
         const category = await Category.create(newCategory);
         expect(category).toEqual({
-            category_name: 'test_new'
+            categoryName: 'test_new'
         });
     });
 
@@ -83,7 +83,7 @@ describe('update', function () {
     test('works', async () => {
         const category = await Category.update(updateData);
         expect(category).toEqual({
-            category_name: 'test_updated'
+            categoryName: 'test_updated'
         });
     });
 
@@ -111,7 +111,7 @@ describe('remove', function () {
         //create a new category that has no menu items belong to.
         await Category.create('newCategory');
         const check1 = await db.query(
-            `SELECT category_name
+            `SELECT category_name AS "categoryName"
              FROM categories
              WHERE category_name = 'newCategory'`);
         //check if the new category is created.
@@ -119,7 +119,7 @@ describe('remove', function () {
 
         await Category.remove('newCategory');
         const res = await db.query(
-            `SELECT category_name
+            `SELECT category_name AS "categoryName"
              FROM categories
              WHERE category_name = 'newCategory'`);
         expect(res.rows.length).toEqual(0);

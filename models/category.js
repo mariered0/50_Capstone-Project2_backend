@@ -29,12 +29,12 @@ class Category {
 
      /** Find all categories
      * 
-     *  Returns [ { category_name: category },... ]}
+     *  Returns [ { categoryName: category },... ]}
      */
 
     static async findAll(){
         const result = await db.query(
-            `SELECT category_name
+            `SELECT category_name AS "categoryName"
              FROM categories`
         );
         const categories = result.rows;
@@ -48,7 +48,7 @@ class Category {
 
     static async create(categoryName){
         const duplicateCheck = await db.query(
-            `SELECT category_name
+            `SELECT category_name AS categoryName
              FROM categories
              WHERE category_name = $1`,
             [categoryName]);
@@ -59,7 +59,7 @@ class Category {
             `INSERT INTO categories
              (category_name)
              VALUES ($1)
-             RETURNING category_name`,
+             RETURNING category_name AS "categoryName"`,
              [categoryName]);
         const category = result.rows[0];
         
@@ -75,7 +75,7 @@ class Category {
 
         
         const category = await db.query(`
-            SELECT category_name
+            SELECT category_name AS "categoryName"
             FROM categories
             WHERE category_name = $1`,
             [categoryName]);
@@ -83,10 +83,10 @@ class Category {
         if(category.rows[0] || categoryName === '') throw new BadRequestError(`Duplicate category: ${categoryName}`);
 
         const result = await db.query(`
-            INSERT INTO categories
+            INSERT INTO categories 
             (category_name)
             VALUES ($1)
-            RETURNING category_name`,
+            RETURNING category_name AS "categoryName"`,
             [categoryName]);
 
         const updatedCategory = result.rows[0];

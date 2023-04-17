@@ -28,7 +28,8 @@ async function commonBeforeAll() {
     await db.query(`
         INSERT INTO categories(category_name)
         VALUES ('cat1'),
-               ('cat2')`);
+               ('cat2'),
+               ('cat3')`);
 
     //Create dummy data for items
     await db.query(`

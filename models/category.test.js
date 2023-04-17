@@ -48,6 +48,9 @@ describe('findAll', function () {
             },
             {
                 categoryName: 'cat2'
+            },
+            {
+                categoryName: 'cat3'
             }
         ]);
     });
@@ -78,10 +81,11 @@ describe('create', function () {
 /************************************** update */
 
 describe('update', function () {
+    const categoryToUpdate = 'cat3'
     const updateData = 'test_updated';
 
     test('works', async () => {
-        const category = await Category.update(updateData);
+        const category = await Category.update(categoryToUpdate, updateData);
         expect(category).toEqual({
             categoryName: 'test_updated'
         });
@@ -89,7 +93,7 @@ describe('update', function () {
 
     test('not found error if no such category', async () => {
         try{
-            await Category.update('no');
+            await Category.update('no', updateData);
         }catch(err){
             expect(err instanceof NotFoundError).toBeTruthy();
         }
@@ -97,7 +101,7 @@ describe('update', function () {
 
     test('bad request error with no data', async () => {
         try{
-            await Category.update('');
+            await Category.update(categoryToUpdate, '');
         }catch(err){
             expect(err instanceof BadRequestError).toBeTruthy();
         }

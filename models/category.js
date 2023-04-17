@@ -71,23 +71,22 @@ class Category {
      *  Returns updated category name.
      */
 
-    static async update(categoryName){
+    static async update(categoryName, data){
 
-        
-        const category = await db.query(`
+        const check = await db.query(`
             SELECT category_name AS "categoryName"
             FROM categories
             WHERE category_name = $1`,
             [categoryName]);
         
-        if(category.rows[0] || categoryName === '') throw new BadRequestError(`Duplicate category: ${categoryName}`);
+        if(check.rows.length === 0) throw new NotFoundError(`No category: ${categoryName}`);
 
         const result = await db.query(`
-            INSERT INTO categories 
-            (category_name)
-            VALUES ($1)
+            UPDATE categories 
+            SET category_name = $1
+            WHERE category_name = $2
             RETURNING category_name AS "categoryName"`,
-            [categoryName]);
+            [data, categoryName]);
 
         const updatedCategory = result.rows[0];
 

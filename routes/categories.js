@@ -68,13 +68,14 @@ router.post('/', ensureAdmin, async (req, res, next) => {
 
 router.patch('/:category', ensureAdmin, async (req, res, next) => {
     try{
+        
         const validator = jsonschema.validate(req.body, categoryNewSchema);
         if(!validator.valid) {
             const errs = validator.errors.map(e => e.stack);
             throw new BadRequestError(errs);
         }
 
-        const category = await Category.update(req.body.categoryName);
+        const category = await Category.update(req.params.category, req.body.categoryName);
         return res.json(category);
     } catch(err){
         return next(err);
@@ -88,6 +89,7 @@ router.delete('/:category', ensureAdmin, async (req, res, next) => {
         await Category.remove(req.params.category);
         return res.json({ deleted: req.params.category });
     }catch(err){
+        console.log(err);
         return next(err);
     }
 });

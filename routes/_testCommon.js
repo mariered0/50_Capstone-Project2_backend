@@ -14,6 +14,7 @@ async function commonBeforeAll() {
     //create dummy catagory
     await Category.create("cat1");
     await Category.create("cat2");
+    await Category.create("cat3");
 
     //create dummy items
     await Item.create(

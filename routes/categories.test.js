@@ -45,10 +45,13 @@ describe("GET /categories", function () {
             .get('/categories');
         expect(resp.body).toEqual({
             categories: [{
-                category_name: "cat1"
+                categoryName: "cat1"
             },
             {
-                category_name: "cat2"
+                categoryName: "cat2"
+            },
+            {
+                categoryName: "cat3"
             }]
         });
     });
@@ -104,14 +107,75 @@ describe("POST /categories", function () {
 
 describe('PATCH /categories/:category', function () {
     test('works with admin',  async () => {
+        //create a new category
+        // const resp = await request(app)
+        //     .post('/categories')
+        //     .send({
+        //         categoryName: "cat_new"
+        //     })
+        //     .set('authorization', `Bearer ${test_adminToken}`);
+        // expect(resp.statusCode).toEqual(201);
+        
+        //update the new category created
         const resp = await request(app)
-            .patch(`/categories/cat1`)
+            .patch(`/categories/cat3`)
             .send({
-                categoryName: 'cat1_updated'
+                categoryName: 'cat3_updated',
             })
             .set("authorization", `Bearer ${test_adminToken}`);
         expect(resp.body).toEqual({
-            category_name: "cat1_updated"
+            categoryName: "cat3_updated"
         });
-    })
-})
+    });
+
+    test('unauth error with anon', async () => {
+        const resp = await request(app)
+            .patch(`/categories/cat1`)
+            .send({
+                categoryName: 'cat1_up'
+            })
+            .set('authorization', `Bearer ${test1Token}`);
+        expect(resp.statusCode).toEqual(401);
+    });
+
+    test('not found if no such category', async () => {
+        const resp = await request(app)
+            .patch(`/categories/non`)
+            .send({
+                categoryName: 'non'
+            })
+            .set('authorization', `Bearer ${test_adminToken}`);
+        expect(resp.statusCode).toEqual(404);
+    });
+});
+
+/************************************** DELETE /categories/:category */
+
+describe("DELETE /categories/:category", function () {
+    test("works with admin", async () => {
+      const resp = await request(app)
+          .delete(`/categories/cat3`)
+          .set("authorization", `Bearer ${test_adminToken}`);
+      expect(resp.body).toEqual({ deleted: "cat3" });
+    });
+  
+    test("unauth error with non-admin", async function () {
+      const resp = await request(app)
+          .delete(`/categories/cat3`)
+          .set("authorization", `Bearer ${test1Token}`);
+      expect(resp.statusCode).toEqual(401);
+    });
+  
+    test("unauth error with anon", async function () {
+      const resp = await request(app)
+          .delete(`/categories/cat3`);
+      expect(resp.statusCode).toEqual(401);
+    });
+  
+    test("not found error if no such category", async function () {
+      const resp = await request(app)
+          .delete(`/categories/nope`)
+          .set("authorization", `Bearer ${test_adminToken}`);
+      expect(resp.statusCode).toEqual(404);
+    });
+  });

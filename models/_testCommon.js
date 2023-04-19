@@ -31,11 +31,26 @@ async function commonBeforeAll() {
                ('cat2'),
                ('cat3')`);
 
+    //Check the ids for catagories
+    const cat1Result = await db.query(`
+        SELECT id
+        FROM categories
+        WHERE category_name = 'cat1'`);
+    const cat1Id = cat1Result.rows[0].id;
+
+    const cat2Result = await db.query(`
+        SELECT id
+        FROM categories
+        WHERE category_name = 'cat2'`);
+    const cat2Id = cat2Result.rows[0].id;
+
+    console.log(cat1Id);
+
     //Create dummy data for items
     await db.query(`
-        INSERT INTO items(item_name, item_desc, item_price, category)
-        VALUES ('item1', 'item item item', '18.95', 'cat1'),
-               ('item2', 'item item item', '18.95', 'cat2')`)
+        INSERT INTO items(item_name, item_desc, item_price, category_id)
+        VALUES ('item1', 'item item item', '18.95', ${cat1Id}),
+               ('item2', 'item item item', '18.95', ${cat2Id})`)
 }
 
 async function commonBeforeEach() {

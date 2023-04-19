@@ -11,13 +11,15 @@ CREATE TABLE users (
 );
 
 CREATE TABLE categories (
-    category_name TEXT PRIMARY KEY
+    id SERIAL PRIMARY KEY,
+    category_name TEXT NOT NULL
 );
 
 CREATE TABLE items (
-    category TEXT NOT NULL
+    category_id INT NOT NULL
         REFERENCES categories,
-    item_name TEXT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
+    item_name TEXT NOT NULL,
     item_desc TEXT NOT NULL,
     item_price NUMERIC(4,2) NOT NULL
 );
@@ -25,7 +27,7 @@ CREATE TABLE items (
 CREATE TABLE favorites (
     username TEXT NOT NULL
         REFERENCES users ON DELETE CASCADE,
-    item_name TEXT NOT NULL
+    item_id INT NOT NULL
         REFERENCES items ON DELETE CASCADE,
-    PRIMARY KEY (username, item_name)
+    PRIMARY KEY (username, item_id)
 );

@@ -150,11 +150,11 @@ class User {
     if (!user) throw new NotFoundError(`No user: ${username}`);
 
     const userFavoriteRes = await db.query(
-        `SELECT f.item_name
+        `SELECT f.id, f.item_name
          FROM favorites AS f
          WHERE f.username = $1`, [username]);
 
-    user.favorites = userFavoriteRes.rows.map(i => i.item_name);
+    user.favorites = userFavoriteRes.rows.map(i => i.id, i.item_name);
 
     return user;
   }

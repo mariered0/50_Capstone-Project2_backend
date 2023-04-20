@@ -44,8 +44,6 @@ async function commonBeforeAll() {
         WHERE category_name = 'cat2'`);
     const cat2Id = cat2Result.rows[0].id;
 
-    console.log(cat1Id);
-
     //Create dummy data for items
     await db.query(`
         INSERT INTO items(item_name, item_desc, item_price, category_id)

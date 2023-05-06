@@ -21,10 +21,10 @@ describe('get', function () {
     test('works', async () => {
         const category = await Category.get('cat1');
         expect(category).toEqual([{
+            id: expect.any(Number),
             itemName: 'item1',
             itemDesc: 'item item item', 
-            itemPrice: '18.95',
-            category: 'cat1'
+            itemPrice: '18.95'
         }]);
     });
 

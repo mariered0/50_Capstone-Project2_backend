@@ -30,7 +30,7 @@ describe('GET /categories/:category', function () {
                 itemName: "item1",
                 itemDesc: "item item item",
                 itemPrice: "18.95",
-                category: "cat1"
+                category_id: any(Number)
             }]
         });
     });

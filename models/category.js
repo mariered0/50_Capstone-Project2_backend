@@ -8,21 +8,30 @@ const { BadRequestError, NotFoundError } = require('../expressError');
 class Category {
     /** Find all items in the category
      * 
-     *  Returns [{ itemName, itemDesc, itemPrice }, ...]
+     *  Returns [{ id, itemName, itemDesc, itemPrice }, ...]
      */
 
     static async get(category){
-        const result = await db.query(
-                `SELECT item_name AS "itemName",
-                        item_desc AS "itemDesc",
-                        item_price AS "itemPrice",
-                        category
-                 FROM items
-                 WHERE category = $1`,
+        //check category_id first
+        const catIdRes = await db.query(
+            `SELECT id, 
+                    category_name AS "categoryName"
+             FROM categories
+             WHERE category_name = $1`,
             [category]);
-        const items = result.rows;
+        
+        if (!catIdRes.rows[0]) throw new NotFoundError(`No category: ${category}`);
+        const catId = catIdRes.rows[0].id;
 
-        if (!items) throw new NotFoundError(`No category: ${category}`);
+        const result = await db.query(
+                `SELECT id,
+                        item_name AS "itemName",
+                        item_desc AS "itemDesc",
+                        item_price AS "itemPrice"
+                 FROM items
+                 WHERE category_id = $1`,
+            [catId]);
+        const items = result.rows;
 
         return items;
     }

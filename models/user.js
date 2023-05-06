@@ -150,11 +150,13 @@ class User {
     if (!user) throw new NotFoundError(`No user: ${username}`);
 
     const userFavoriteRes = await db.query(
-        `SELECT f.id, f.item_name
+        `SELECT f.item_id AS itemId, i.item_name AS itemName
          FROM favorites AS f
+         JOIN items AS i
+         ON f.item_id = i.id
          WHERE f.username = $1`, [username]);
 
-    user.favorites = userFavoriteRes.rows.map(i => i.id, i.item_name);
+    user.favorites = userFavoriteRes.rows.map(i => i.itemName);
 
     return user;
   }
@@ -231,16 +233,18 @@ class User {
     if (!user) throw new NotFoundError(`No user: ${username}`);
 
     const itemCheck = await db.query(
-      `SELECT item_name
+      `SELECT id, item_name AS itemName
        FROM items
        WHERE item_name = $1`, [itemName]);
-    const item = itemCheck.rows[0];
-    if (!item) throw new NotFoundError(`No item: ${itemName}`);
+    const itemId = itemCheck.rows[0].id;
+
+    if (!itemId) throw new NotFoundError(`No item: ${itemName}`);
 
     await db.query(
-      `INSERT INTO favorites (username, item_name)
-       VALUES ($1, $2)`,
-       [username, itemName]); 
+      `INSERT INTO favorites (username, item_id)
+       VALUES ($1, $2)
+       RETURNING username, item_id`,
+       [username, itemId]); 
   }
 
   /** Remove the item from the user's favorite list in db.

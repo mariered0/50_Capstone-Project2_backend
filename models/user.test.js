@@ -255,11 +255,19 @@ describe('remove', function () {
 describe('addToFavorite', function() {
     test('works', async () => {
         await User.addToFavorite('test1', 'item1');
+        const item1 = await db.query(`
+            SELECT id
+            FROM items
+            WHERE item_name = 'item1'`)
+        const item1Id = item1.rows[0].id;
+        console.log('item1Id:', item1Id);
         const res = await db.query(`
-            SELECT * FROM favorites WHERE username = 'test1'`);
+            SELECT username, item_id AS itemId 
+            FROM favorites 
+            WHERE username = 'test1'`);
         expect(res.rows).toEqual([{
             username: 'test1',
-            item_name: 'item1'
+            itemId: expect.any(Number)
         }]);
     });
 

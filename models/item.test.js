@@ -76,14 +76,14 @@ describe("findAll", () => {
         itemName: "item1",
         itemDesc: "item item item",
         itemPrice: "18.95",
-        categoryId: expect.any(Number)
+        categoryName: "cat1"
       },
       {
         id: expect.any(Number),
         itemName: "item2",
         itemDesc: "item item item",
         itemPrice: "18.95",
-        categoryId: expect.any(Number)
+        categoryName: "cat2"
       },
     ]);
   });
@@ -95,10 +95,11 @@ describe('get', () => {
     test('works', async () => {
         const item = await Item.get('item1');
         expect(item).toEqual({
+            id: expect.any(Number),
             itemName: "item1",
             itemDesc: "item item item",
             itemPrice: "18.95",
-            categoryId: expect.any(Number)
+            categoryName: "cat1"
         })
     });
 

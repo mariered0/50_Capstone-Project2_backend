@@ -27,27 +27,37 @@ describe("create", () => {
 
   test("works", async () => {
     let item = await Item.create(newItem);
-    expect(item).toEqual(newItem);
+    expect(item).toEqual({
+      itemName: "new",
+      itemDesc: "new new new",
+      itemPrice: "18.95",
+      categoryId: expect.any(Number),
+    });
 
     const result = await db.query(
-      `SELECT item_name, item_desc, item_price, category
-             FROM items
-             WHERE item_name = 'new'`
+      `SELECT item_name AS "itemName", 
+              item_desc AS "itemDesc", 
+              item_price AS "itemPrice", 
+              category_id AS "categoryId"
+       FROM items
+       WHERE item_name = 'new'`
     );
 
     expect(result.rows).toEqual([
       {
-        item_name: "new",
-        item_desc: "new new new",
-        item_price: "18.95",
-        category: "cat1",
+        itemName: "new",
+        itemDesc: "new new new",
+        itemPrice: "18.95",
+        categoryId: expect.any(Number)
       },
     ]);
   });
 
   test("bad request with dupliate item name", async () => {
     try {
+      //making duplicate
       await Item.create(newItem);
+      //check duplicate
       await Item.create(newItem);
     } catch (err) {
       expect(err instanceof BadRequestError).toBeTruthy();
@@ -62,31 +72,33 @@ describe("findAll", () => {
     const items = await Item.findAll();
     expect(items).toEqual([
       {
+        id: expect.any(Number),
         itemName: "item1",
         itemDesc: "item item item",
         itemPrice: "18.95",
-        category: "cat1"
+        categoryId: expect.any(Number)
       },
       {
+        id: expect.any(Number),
         itemName: "item2",
         itemDesc: "item item item",
         itemPrice: "18.95",
-        category: "cat2"
+        categoryId: expect.any(Number)
       },
     ]);
   });
 });
 
-/************************************** findItem */
+/************************************** get */
 
-describe('findItem', () => {
+describe('get', () => {
     test('works', async () => {
         const item = await Item.get('item1');
         expect(item).toEqual({
             itemName: "item1",
             itemDesc: "item item item",
             itemPrice: "18.95",
-            category: "cat1"
+            categoryId: expect.any(Number)
         })
     });
 
@@ -114,18 +126,21 @@ describe('update', () => {
             itemName: 'item1_updated',
             itemDesc: 'item item updated',
             itemPrice: '18.95',
-            category: 'cat1'
+            categoryId: expect.any(Number)
         });
 
         const result = await db.query(
-            `SELECT item_name, item_desc, item_price, category
+            `SELECT item_name, 
+                    item_desc, 
+                    item_price, 
+                    category_id
              FROM items
              WHERE item_name = 'item1_updated'`);
         expect(result.rows).toEqual([{
             item_name: 'item1_updated',
             item_desc: 'item item updated',
             item_price: '18.95',
-            category: 'cat1'
+            category_id: expect.any(Number)
         }])
     })
 

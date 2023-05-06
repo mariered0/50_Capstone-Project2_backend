@@ -9,16 +9,18 @@ const { sqlForPartialUpdate } = require('../helpers/sql');
 class Item {
     /** Find all menu items.
      * 
-     *  Returns {items: [{ item_name, item_desc, item_price, category }, ...]}
+     *  Returns {items: [{ id, itemName, itemDesc, itemPrice, categoryId }, ...]}
      */
 
     static async findAll(){
         const result = await db.query(
-            `SELECT item_name AS "itemName",
+            `SELECT id,
+                    item_name AS "itemName",
                     item_desc AS "itemDesc",
                     item_price AS "itemPrice",
-                    category
-             FROM items`
+                    category_id AS "categoryId"
+             FROM items
+             ORDER BY category_id`
         );
         
         
@@ -35,7 +37,7 @@ class Item {
                 `SELECT item_name AS "itemName",
                         item_desc AS "itemDesc",
                         item_price AS "itemPrice",
-                        category
+                        category_id AS "categoryId"
                  FROM items
                  WHERE item_name = $1`,
             [itemName]);
@@ -48,10 +50,11 @@ class Item {
     
      /** Create a new menu item
      * 
-     *  Returns { item: [{ itemName, itemDesc, itemPrice, category }]}
+     *  Returns { item: [{ id, itemName, itemDesc, itemPrice, categoryId }]}
      */
 
      static async create({ itemName, itemDesc, itemPrice, category }){
+        //check duplicate with the itemName
         const duplicateCheck = await db.query(
             `SELECT item_name
              FROM items
@@ -61,25 +64,27 @@ class Item {
         if (duplicateCheck.rows[0])
             throw new BadRequestError(`Duplicate item: ${itemName}`);
        
-        const categoryName = await db.query(
-            `SELECT category_name
+        //check categoryId
+        const categoryIdRes = await db.query(
+            `SELECT id, category_name
              FROM categories
              WHERE category_name = $1`,
              [category]);
         
-        if (!categoryName.rows[0])
+        if (!categoryIdRes.rows[0])
             throw new BadRequestError(`No category: ${category}`);
         
+        const categoryId = categoryIdRes.rows[0].id;
 
         const result = await db.query(
               `INSERT INTO items
-               (category, item_name, item_desc, item_price)
+               (item_name, item_desc, item_price, category_id)
                VALUES ($1, $2, $3, $4)
-               RETURNING item_name AS "itemName", item_desc AS "itemDesc", item_price AS "itemPrice", category`,
-               [category.toString(),
-                itemName,
+               RETURNING item_name AS "itemName", item_desc AS "itemDesc", item_price AS "itemPrice", category_id AS "categoryId"`,
+               [itemName,
                 itemDesc,
-                itemPrice]);
+                itemPrice,
+                categoryId]);
         const item = result.rows[0];
 
         return item;
@@ -113,7 +118,7 @@ class Item {
                           RETURNING item_name AS "itemName",
                                     item_desc AS "itemDesc",
                                     item_price AS "itemPrice",
-                                    category`;
+                                    category_id AS "categoryId"`;
         const result = await db.query(querySql, [...values, itemName]);
         const item = result.rows[0];
 
@@ -133,7 +138,7 @@ class Item {
             `DELETE
              FROM items
              WHERE item_name = $1
-             RETURNING item_name, item_desc, item_price, category`,
+             RETURNING item_name, item_desc, item_price, category_id`,
             [itemName]);
         const item = result.rows[0];
 

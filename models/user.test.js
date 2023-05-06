@@ -260,14 +260,14 @@ describe('addToFavorite', function() {
             FROM items
             WHERE item_name = 'item1'`)
         const item1Id = item1.rows[0].id;
-        console.log('item1Id:', item1Id);
+
         const res = await db.query(`
-            SELECT username, item_id AS itemId 
+            SELECT username, item_id AS "itemId" 
             FROM favorites 
             WHERE username = 'test1'`);
         expect(res.rows).toEqual([{
             username: 'test1',
-            itemId: expect.any(Number)
+            itemId: item1Id
         }]);
     });
 
@@ -297,7 +297,7 @@ describe('removeFromFavorite', function() {
             SELECT * FROM favorites WHERE username = 'test1'`);
         expect(res.rows).toEqual([{
             username: 'test1',
-            item_name: 'item1'
+            item_id: expect.any(Number)
         }]);
 
         await User.removeFromFavorite('test1', 'item1');

@@ -127,7 +127,7 @@ class User {
 
   /** Given a username, return data about the user.
    *
-   * Returns { username, first_name, last_name, email, phone, is_admin, [favorites] }
+   * Returns { username, first_name, last_name, email, phone, is_admin, favorites: [itemName...] }
    *
    * Throws NotFoundError is the user is not found.
    */
@@ -150,7 +150,8 @@ class User {
     if (!user) throw new NotFoundError(`No user: ${username}`);
 
     const userFavoriteRes = await db.query(
-        `SELECT f.item_id AS itemId, i.item_name AS itemName
+        `SELECT f.item_id AS "itemId", 
+                i.item_name AS "itemName"
          FROM favorites AS f
          JOIN items AS i
          ON f.item_id = i.id
@@ -233,12 +234,14 @@ class User {
     if (!user) throw new NotFoundError(`No user: ${username}`);
 
     const itemCheck = await db.query(
-      `SELECT id, item_name AS itemName
+      `SELECT id, 
+              item_name AS "itemName"
        FROM items
        WHERE item_name = $1`, [itemName]);
-    const itemId = itemCheck.rows[0].id;
+    
 
-    if (!itemId) throw new NotFoundError(`No item: ${itemName}`);
+    if (!itemCheck.rows[0]) throw new NotFoundError(`No item: ${itemName}`);
+    const itemId = itemCheck.rows[0].id;
 
     await db.query(
       `INSERT INTO favorites (username, item_id)
@@ -258,18 +261,18 @@ class User {
     if (!user) throw new NotFoundError(`No user: ${username}`);
 
     const itemCheck = await db.query(
-      `SELECT item_name
+      `SELECT item_name, id
        FROM items
        WHERE item_name = $1`, [itemName]);
     const item = itemCheck.rows[0];
     if (!item) throw new NotFoundError(`No item: ${itemName}`);
 
-    //Check if the item is included in the user's favorite list.
+    //Check if the item is included in the user's favorite list and then delete from favorite
     if (user.favorites.includes(itemName)) {
       await db.query(
       `DELETE
        FROM favorites
-       WHERE (username = $1 AND item_name = $2)`, [username, itemName])
+       WHERE (username = $1 AND item_id = $2)`, [username, item.id])
     }else{
       throw new NotFoundError(`Not in favorite: ${itemName}`)
     }

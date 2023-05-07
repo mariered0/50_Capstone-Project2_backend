@@ -48,7 +48,7 @@ router.get('/:itemName', async function (req, res, next) {
 
 /** POST / =>  { item:  { itemName, itemDesc, itemPrice, category }}
  * 
- * Returns the item created => {{item: {itemName, itemDesc, itemPrice, category}}
+ * Returns the item created => {{item: {id, itemName, itemDesc, itemPrice, categoryId}}
  * 
  * Authrization required: admin
  */
@@ -73,9 +73,9 @@ router.post('/', ensureAdmin, async function (req, res, next) {
 *
 * Patches a menu item data.
 *
-* The fields can be: { itemName, itemDesc, itemPrice, category }
+* The fields can be: { itemName, itemDesc, itemPrice }
 *
-* Returns { item: [ { itemName, itemDesc, itemPrice, category }]}
+* Returns { item: { itemName, itemDesc, itemPrice, categoryId }}
 *
 * Authorization required: admin
 */

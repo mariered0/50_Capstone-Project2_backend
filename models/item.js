@@ -86,7 +86,8 @@ class Item {
               `INSERT INTO items
                (item_name, item_desc, item_price, category_id)
                VALUES ($1, $2, $3, $4)
-               RETURNING item_name AS "itemName", 
+               RETURNING id,
+                         item_name AS "itemName", 
                          item_desc AS "itemDesc", 
                          item_price AS "itemPrice", 
                          category_id AS "categoryId"`,
@@ -128,6 +129,7 @@ class Item {
                                     item_desc AS "itemDesc",
                                     item_price AS "itemPrice",
                                     category_id AS "categoryId"`;
+
         const result = await db.query(querySql, [...values, itemName]);
         const item = result.rows[0];
 

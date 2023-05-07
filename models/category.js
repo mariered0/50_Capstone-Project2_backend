@@ -20,6 +20,7 @@ class Category {
              WHERE category_name = $1`,
             [category]);
         
+
         if (!catIdRes.rows[0]) throw new NotFoundError(`No category: ${category}`);
         const catId = catIdRes.rows[0].id;
 
@@ -44,7 +45,8 @@ class Category {
     static async findAll(){
         const result = await db.query(
             `SELECT category_name AS "categoryName"
-             FROM categories`
+             FROM categories
+             ORDER BY category_name`
         );
         const categories = result.rows;
         return categories

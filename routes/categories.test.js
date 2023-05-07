@@ -27,10 +27,10 @@ describe('GET /categories/:category', function () {
             .get(`/categories/cat1`);
         expect(resp.body).toEqual({
             items: [{
+                id: expect.any(Number),
                 itemName: "item1",
                 itemDesc: "item item item",
                 itemPrice: "18.95",
-                category_id: any(Number)
             }]
         });
     });
@@ -107,14 +107,6 @@ describe("POST /categories", function () {
 
 describe('PATCH /categories/:category', function () {
     test('works with admin',  async () => {
-        //create a new category
-        // const resp = await request(app)
-        //     .post('/categories')
-        //     .send({
-        //         categoryName: "cat_new"
-        //     })
-        //     .set('authorization', `Bearer ${test_adminToken}`);
-        // expect(resp.statusCode).toEqual(201);
         
         //update the new category created
         const resp = await request(app)

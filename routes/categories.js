@@ -14,7 +14,7 @@ const categoryNewSchema = require('../schemas/categoryNew.json');
 const router = new express.Router();
 
 
-/** GET /:category => { category_name: [{ itemName, itemDesc, itemPrice }, ...]}
+/** GET /:category => { items: [{ id, itemName, itemDesc, itemPrice }, ...]}
  * 
  * Returns a list of items in the category.
  */

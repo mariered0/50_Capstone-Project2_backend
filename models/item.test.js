@@ -28,6 +28,7 @@ describe("create", () => {
   test("works", async () => {
     let item = await Item.create(newItem);
     expect(item).toEqual({
+      id: expect.any(Number),
       itemName: "new",
       itemDesc: "new new new",
       itemPrice: "18.95",

@@ -3,6 +3,7 @@
 const request = require("supertest");
 
 const app = require("../app");
+const db = require("../db");
 
 const {
     commonBeforeAll,
@@ -26,16 +27,18 @@ describe('GET /items', function () {
         const resp = await request(app).get('/items');
         expect(resp.body).toEqual({
             items: [{
+                id: expect.any(Number),
                 itemName: "item1", 
                 itemDesc: "item item item", 
                 itemPrice: "18.95", 
-                category: "cat1"
+                categoryName: "cat1"
             },
             {
+                id: expect.any(Number),
                 itemName: "item2", 
                 itemDesc: "item item item", 
                 itemPrice: "18.95", 
-                category: "cat2"
+                categoryName: "cat2"
             }]
         });
     });
@@ -48,10 +51,11 @@ describe('GET /items/:itemName', function(){
         const resp = await request(app).get(`/items/item1`);
         expect(resp.body).toEqual({
             item: {
+                    id: expect.any(Number),
                     itemName: "item1", 
                     itemDesc: "item item item", 
                     itemPrice: "18.95", 
-                    category: "cat1"
+                    categoryName: "cat1"
                 }
         });
     });
@@ -78,9 +82,14 @@ describe('POST /items', function() {
             .send({item: newItem})
             .set('authorization', `Bearer ${test_adminToken}`);
         expect(resp.statusCode).toEqual(201);
-        expect(resp.body).toEqual({
-            item: newItem
-        });
+        console.log('what was returned:', resp.body);
+        expect(resp.body).toEqual({item: {
+            id: expect.any(Number),
+            itemName: "new", 
+            itemDesc: "item item item", 
+            itemPrice: "18.95", 
+            categoryId: expect.any(Number)
+    }});
     });
 
     test('unauth error with non-admin', async () => {
@@ -127,18 +136,34 @@ describe('PATCH /items/:itemName', function(){
                 itemName: "item_updated",
                 itemDesc: "item item item", 
                 itemPrice: "18.95", 
-                category: "cat1" 
             })
             .set('authorization', `Bearer ${test_adminToken}`);
-        // expect(resp.statusCode).toEqual(201);
+
         expect(resp.body).toEqual({
             item: { 
                 itemName: "item_updated", 
                 itemDesc: "item item item", 
                 itemPrice: "18.95", 
-                category: "cat1" }
+                categoryId: expect.any(Number) }
         });
-    })
+
+        const check = await db.query(
+            `SELECT item_name,
+                    item_desc,
+                    item_price,
+                    category_id
+             FROM items
+             WHERE item_name = 'item_updated';`
+        );
+        //check if the data actually exists now
+        expect(check.rows[0]).toEqual(
+            { 
+                item_name: "item_updated", 
+                item_desc: "item item item", 
+                item_price: "18.95", 
+                category_id: expect.any(Number) }
+                )
+    });
 })
 
 /************************************** DELETE /items/:itemName */

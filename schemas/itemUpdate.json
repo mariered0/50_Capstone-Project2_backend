@@ -7,8 +7,7 @@
     "required": [
         "itemName",
         "itemDesc",
-        "itemPrice",
-        "category"
+        "itemPrice"
     ],
     "properties": {
         "itemName": {
@@ -34,20 +33,11 @@
             "examples": [
                 "9.95"
             ]
-        },
-        "category": {
-            "type": "string",
-            "default": "",
-            "title": "The category Schema",
-            "examples": [
-                "Noodles with Soup"
-            ]
         }
     },
     "examples": [{
         "itemName": "Egg Noodle Soup",
         "itemDesc": "Egg noodle serve with BBQ pork, fish ball, bean sprout,\ngreen onion, cilantro",
-        "itemPrice": "9.95",
-        "category": "Noodles with Soup"
+        "itemPrice": "9.95"
     }]
 }

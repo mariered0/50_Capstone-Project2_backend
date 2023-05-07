@@ -214,7 +214,7 @@ describe("DELETE /items/:itemName", function () {
             .set('authorization', `Bearer ${test_adminToken}`);
 
         expect(resp.body).toEqual(
-            { Deleted: {item: { 
+            { deleted: {item: { 
                           itemName: 'item1', 
                           itemDesc: 'item item item', 
                           itemPrice: '18.95', 

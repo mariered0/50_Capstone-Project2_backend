@@ -21,7 +21,7 @@ const router = new express.Router();
  * Authorization: admin
  */
 
-router.get('/', async (req, res, next) => {
+router.get('/', ensureAdmin, async (req, res, next) => {
     try{
         const users = await User.findAll();
         return res.json({ users });

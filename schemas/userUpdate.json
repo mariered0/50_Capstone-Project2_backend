@@ -5,12 +5,6 @@
     "default": {},
     "title": "Root Schema",
     "required": [
-        "password",
-        "firstName",
-        "lastName",
-        "email",
-        "phone",
-        "isAdmin"
     ],
     "properties": {
         "password": {

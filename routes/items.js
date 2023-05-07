@@ -96,7 +96,7 @@ router.patch('/:itemName', ensureAdmin, async function (req, res, next) {
     }
 })
 
-/** DELETE /:itemName => { Deleted: { item: {itemName, itemDesc, itemPrice, categoryId }} }
+/** DELETE /:itemName => { deleted: { item: {itemName, itemDesc, itemPrice, categoryId }} }
  * 
  * Authorization: admin
  */
@@ -104,7 +104,7 @@ router.patch('/:itemName', ensureAdmin, async function (req, res, next) {
 router.delete("/:itemName", ensureAdmin, async function (req, res, next) {
     try{
         const item = await Item.remove(req.params.itemName);
-        return res.json({ Deleted: { item }});
+        return res.json({ deleted: { item }});
     }catch (err){
         return next (err);
     }

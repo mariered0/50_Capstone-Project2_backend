@@ -89,7 +89,6 @@ router.delete('/:category', ensureAdmin, async (req, res, next) => {
         await Category.remove(req.params.category);
         return res.json({ deleted: req.params.category });
     }catch(err){
-        console.log(err);
         return next(err);
     }
 });

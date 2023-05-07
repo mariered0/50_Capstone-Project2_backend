@@ -82,7 +82,6 @@ describe('POST /items', function() {
             .send({item: newItem})
             .set('authorization', `Bearer ${test_adminToken}`);
         expect(resp.statusCode).toEqual(201);
-        console.log('what was returned:', resp.body);
         expect(resp.body).toEqual({item: {
             id: expect.any(Number),
             itemName: "new", 
@@ -143,27 +142,102 @@ describe('PATCH /items/:itemName', function(){
             item: { 
                 itemName: "item_updated", 
                 itemDesc: "item item item", 
-                itemPrice: "18.95", 
+                itemPrice: "18.95",
                 categoryId: expect.any(Number) }
         });
+    });
 
-        const check = await db.query(
-            `SELECT item_name,
-                    item_desc,
-                    item_price,
-                    category_id
-             FROM items
-             WHERE item_name = 'item_updated';`
-        );
-        //check if the data actually exists now
-        expect(check.rows[0]).toEqual(
-            { 
-                item_name: "item_updated", 
-                item_desc: "item item item", 
-                item_price: "18.95", 
-                category_id: expect.any(Number) }
-                )
+    test('unauth error with non-admin', async () => {
+        const resp = await request(app)
+            .patch(`/items/item1`)
+            .send({ 
+                itemName: "item_updated",
+                itemDesc: "item updated", 
+                itemPrice: "18.95"
+            })
+            .set('authorization', `Bearer ${test1Token}`);
+        expect(resp.statusCode).toEqual(401);
+    });
+
+    test('unauth error for anon', async () => {
+        const resp = await request(app)
+            .patch(`/items/item1`)
+            .send({
+                itemName: "item_updated",
+                itemDesc: "item updated", 
+                itemPrice: "18.95"
+            });
+        expect(resp.statusCode).toEqual(401);
+    });
+
+    test('not found error with invalid itemName', async () => {
+        const resp = await request(app)
+            .patch(`/items/no`)
+            .send({
+                itemName: "item_updated",
+                itemDesc: "item updated", 
+                itemPrice: "18.95"
+            })
+            .set('authorization', `Bearer ${test_adminToken}`);
+        expect(resp.statusCode).toEqual(404);
+    });
+
+    test('bad request error with category change attempt', async () => {
+        const resp = await request(app)
+            .patch(`/items/item1`)
+            .send({
+                categoryId: "000"
+            })
+            .set('authorization', `Bearer ${test_adminToken}`);
+        expect(resp.statusCode).toEqual(400);
+    });
+
+    test('bad request error with invalid data', async () => {
+        const resp = await request(app)
+            .patch(`/items/item1`)
+            .send({
+                item: "item_updated",
+                itemD: "item updated", 
+                itemP: "18.95"
+            })
+            .set('authorization', `Bearer ${test_adminToken}`);
+        expect(resp.statusCode).toEqual(400);
     });
 })
 
 /************************************** DELETE /items/:itemName */
+
+describe("DELETE /items/:itemName", function () {
+    test('works with admin', async () => {
+        const resp = await request(app)
+            .delete(`/items/item1`)
+            .set('authorization', `Bearer ${test_adminToken}`);
+
+        expect(resp.body).toEqual(
+            { Deleted: {item: { 
+                          itemName: 'item1', 
+                          itemDesc: 'item item item', 
+                          itemPrice: '18.95', 
+                          categoryId: expect.any(Number) }}});
+    });
+
+    test('uauth error with non-admin', async () => {
+        const resp = await request(app)
+            .delete(`/items/item1`)
+            .set('authorization', `Bearer ${test1Token}`);
+        expect(resp.statusCode).toEqual(401);
+    });
+
+    test('uanth error with anon', async () => {
+        const resp = await request(app)
+            .delete(`/items/item1`)
+        expect(resp.statusCode).toEqual(401);
+    });
+
+    test('not found error with invalid itemName', async () => {
+        const resp = await request(app)
+            .delete(`/items/no`)
+            .set('authorization', `Bearer ${test_adminToken}`);
+        expect(resp.statusCode).toEqual(404);
+    });
+})

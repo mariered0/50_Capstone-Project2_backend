@@ -139,7 +139,7 @@ class Item {
      }
 
      /** Delete given menu item from database. 
-      * returns { Deleted: [{ itemName, itemDesc, itemPrice, category }]}
+      * returns { Deleted: item: { itemName, itemDesc, itemPrice, categoryId }}
       * 
       * Throws NotFoundError if the item not found.
       */
@@ -149,7 +149,10 @@ class Item {
             `DELETE
              FROM items
              WHERE item_name = $1
-             RETURNING item_name, item_desc, item_price, category_id`,
+             RETURNING item_name AS "itemName", 
+                       item_desc AS "itemDesc", 
+                       item_price AS "itemPrice", 
+                       category_id AS "categoryId"`,
             [itemName]);
         const item = result.rows[0];
 

@@ -15,15 +15,30 @@ const itemUpdateSchema = require('../schemas/itemUpdate.json');
 const router = new express.Router();
 
 
-/** GET / => { items: [ { itemName, itemDesc, itemPrice, category }, ... ]} 
+/** GET / => { items: { categoryName: [ { itemName, itemDesc, itemPrice, category }, ... ]}, categoryName: [{ itemName, ...}, ...], ... } 
  * 
- * Returns a list of all menu items.
+ * Returns a list of all menu items in arrays grouped by the category.
  * 
 **/
 
 router.get('/', async function (req, res, next) {
     try {
-        const items = await Item.findAll();
+        const result = await Item.findAll();
+        
+        //group the data by each category
+        function groupBy(objArray, property) {
+            return objArray.reduce((acc, obj) => {
+                const key = obj[property];
+                if(!acc[key]) {
+                    acc[key] = [];
+                }
+                //add obj to array for given key's value
+                acc[key].push(obj);
+                return acc;
+            }, {});
+        }
+        const items = groupBy(result, 'categoryName');
+        
         return res.json({items});
     } catch (err){
         return next(err);

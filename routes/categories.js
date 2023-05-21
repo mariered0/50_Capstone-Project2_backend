@@ -22,7 +22,6 @@ const router = new express.Router();
 router.get('/:category', async function (req, res, next) {
     try{
         const items = await Category.get(req.params.category);
-        res.headers['Access-Control-Allow-Origin'] = '*';
         return res.json({ items });
     }catch(err){
         return next(err);

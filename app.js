@@ -24,6 +24,17 @@ app.use('/users', usersRoutes);
 app.use('/items', itemsRoutes);
 app.use('/categories', categoryRoutes);
 
+//Add Access Control Allow Origin headers
+// app.use(function(req, res, next) {
+//     res.setHeader('Access-Control-Allow-Origin', '*');
+//     res.header(
+//         'Access-Control-Allow-Headers', 
+//         'Origin, X-Requested-With, Content-Type, Accept'
+//     );
+//     console.log('hit');
+//     next();
+// });
+
 
 /** Handle 404 errors - This matches everything */
 app.use(function (req, res, next) {

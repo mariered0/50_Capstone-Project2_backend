@@ -26,8 +26,8 @@ class Item {
              ON c.id = i.category_id
              ORDER BY category_name`
         );
+        return result.rows;
 
-        return result.rows
     }
 
     /** Find the item with the itemName

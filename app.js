@@ -14,6 +14,7 @@ const categoryRoutes = require('./routes/categories');
 
 const morgan = require("morgan");
 const app = express();
+const cors = require('cors');
 
 app.use(express.json());
 app.use(morgan('dev'));
@@ -24,16 +25,11 @@ app.use('/users', usersRoutes);
 app.use('/items', itemsRoutes);
 app.use('/categories', categoryRoutes);
 
-//Add Access Control Allow Origin headers
-// app.use(function(req, res, next) {
-//     res.setHeader('Access-Control-Allow-Origin', '*');
-//     res.header(
-//         'Access-Control-Allow-Headers', 
-//         'Origin, X-Requested-With, Content-Type, Accept'
-//     );
-//     console.log('hit');
-//     next();
-// });
+// Add Access Control Allow Origin headers
+app.use(cors({
+    origin: "*"
+}));
+
 
 
 /** Handle 404 errors - This matches everything */

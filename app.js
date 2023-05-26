@@ -13,8 +13,11 @@ const itemsRoutes = require('./routes/items');
 const categoryRoutes = require('./routes/categories');
 
 const morgan = require("morgan");
-const app = express();
 const cors = require('cors');
+const app = express();
+
+// Add Access Control Allow Origin headers
+app.use(cors());
 
 app.use(express.json());
 app.use(morgan('dev'));
@@ -25,10 +28,7 @@ app.use('/users', usersRoutes);
 app.use('/items', itemsRoutes);
 app.use('/categories', categoryRoutes);
 
-// Add Access Control Allow Origin headers
-app.use(cors({
-    origin: "*"
-}));
+
 
 
 

@@ -4,6 +4,7 @@ const request = require("supertest");
 
 const app = require("../app");
 const db = require("../db");
+const Item = require("../models/item.js");
 
 const {
     commonBeforeAll,
@@ -44,11 +45,12 @@ describe('GET /items', function () {
     });
 })
 
-/************************************** GET /items/:itemName */
+/************************************** GET /items/:id */
 
-describe('GET /items/:itemName', function(){
+describe('GET /items/:id', function(){
     test('works with anon', async () => {
-        const resp = await request(app).get(`/items/item1`);
+        const id = await Item.getFromItemname('item1');
+        const resp = await request(app).get(`/items/${id['id']}`);
         expect(resp.body).toEqual({
             item: {
                     id: expect.any(Number),
@@ -60,8 +62,8 @@ describe('GET /items/:itemName', function(){
         });
     });
 
-    test('not found error if no such item', async () => {
-        const resp = await request(app).get(`/items/no`);
+    test('not found error if no such id', async () => {
+        const resp = await request(app).get(`/items/1000000000`);
         expect(resp.statusCode).toEqual(404);
     });
 });

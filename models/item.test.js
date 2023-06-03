@@ -94,9 +94,10 @@ describe("findAll", () => {
 
 describe('get', () => {
     test('works', async () => {
-        const item = await Item.get('item1');
+        const id = await Item.getFromItemname('item1');
+        const item = await Item.get(id['id']);
         expect(item).toEqual({
-            id: expect.any(Number),
+            id: id['id'],
             itemName: "item1",
             itemDesc: "item item item",
             itemPrice: "18.95",
@@ -104,9 +105,9 @@ describe('get', () => {
         })
     });
 
-    test('invalid itemName', async () => {
+    test('invalid id', async () => {
         try{
-            await Item.get('item10');
+            await Item.get(100000);
         } catch (err){
             expect (err instanceof NotFoundError).toBeTruthy();
         }

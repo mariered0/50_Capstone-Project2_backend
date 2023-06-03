@@ -34,14 +34,14 @@ router.get('/', async function (req, res, next) {
 
 
 
-/** GET /:itemName =>  { item: [ { itemName, itemDesc, itemPrice, category }]}
+/** GET /:id =>  { item: [ { itemName, itemDesc, itemPrice, category }]}
  * 
- * Returns a list of an item with the itemName
+ * Returns a list of an item with the id
  */
 
-router.get('/:itemName', async function (req, res, next) {
+router.get('/:id', async function (req, res, next) {
     try{
-        const item = await Item.get(req.params.itemName);
+        const item = await Item.get(req.params.id);
         return res.json({ item });
     }catch(err){
         return next(err);

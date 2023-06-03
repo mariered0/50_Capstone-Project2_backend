@@ -28,6 +28,7 @@ router.post('/token', async function (req, res, next) {
         }
 
         const { username, password } = req.body;
+        console.log('username & passoword came through to backend:', username, password);
         const user = await User.authenticate(username, password);
         const token = createToken(user);
         return res.json({ token });

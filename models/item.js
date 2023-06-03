@@ -30,12 +30,12 @@ class Item {
 
     }
 
-    /** Find the item with the itemName
+    /** Find the item with the itemName/id
      * 
      *  Returns { item: [{id, itemName, itemDesc, itemPrice, categoryName }]}
      */
 
-    static async get(itemName){
+    static async getFromItemname(itemName){
         const result = await db.query(
                 `SELECT i.id,
                         i.item_name AS "itemName",
@@ -50,6 +50,25 @@ class Item {
         const item = result.rows[0];
 
         if(!item) throw new NotFoundError(`No item: ${itemName}`);
+
+        return item;
+    }
+
+    static async get(id){
+        const result = await db.query(
+                `SELECT i.id,
+                        i.item_name AS "itemName",
+                        i.item_desc AS "itemDesc",
+                        i.item_price AS "itemPrice",
+                        c.category_name AS "categoryName"
+                 FROM items i
+                 JOIN categories AS c 
+                 ON c.id = i.category_id
+                 WHERE i.id = $1`,
+            [id]);
+        const item = result.rows[0];
+
+        if(!item) throw new NotFoundError(`No item with id: ${id}`);
 
         return item;
     }

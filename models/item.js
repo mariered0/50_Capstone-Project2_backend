@@ -30,7 +30,7 @@ class Item {
 
     }
 
-    /** Find the item with the itemName/id
+    /** Find the item with the itemName/id 
      * 
      *  Returns { item: [{id, itemName, itemDesc, itemPrice, categoryName }]}
      */
